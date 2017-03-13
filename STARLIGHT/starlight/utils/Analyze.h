@@ -12,7 +12,7 @@ class Analyze
 {
  public:
   Analyze(); //Constructor
-  Analyze(TString infile, Int_t nEvents); //Special constructor
+  Analyze(char* infile, Int_t nEvents); //Special constructor
   ~Analyze(); //Destructor
   Int_t Init();
   Int_t NextEvent();
@@ -40,7 +40,7 @@ class Analyze
   TH1F *fRap2;
   
   FILE *filelist;
-  TString fInfile;
+  char *fInfile;
   Int_t fNParticles;
   Int_t fNEvents;
   

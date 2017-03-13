@@ -20,9 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // File and Version Information:
-// $Rev:: 283                         $: revision of last commit
+// $Rev:: 277                         $: revision of last commit
 // $Author:: jnystrand                $: author of last commit
-// $Date:: 2017-03-07 18:17:50 +0100 #$: date of last commit
+// $Date:: 2016-09-14 11:55:55 +0200 #$: date of last commit
 //
 // Description:
 //    Added incoherent t2-> pt2 selection.  Following pp selection scheme
@@ -169,7 +169,7 @@ void Gammaavectormeson::twoBodyDecay(starlightConstants::particleTypeEnum &ipid,
 	phi = _randy.Rndom()*2.*starlightConstants::pi;
                                                                                                                 
 	//  find theta, the angle between one of the outgoing particles and
-	//  the beamline, in the outgoing particles' rest frame
+	//  the beamline, in the frame of the two photons
 
 	theta=getTheta(ipid);
  
@@ -275,10 +275,6 @@ double Gammaavectormeson::getDaughterMass(starlightConstants::particleTypeEnum &
 		mdec = starlightConstants::muonMass;
 		ipid = starlightConstants::MUON;
 		break; 
-	case starlightConstants::JPSI_ppbar:
-		mdec = starlightConstants::protonMass;
-		ipid = starlightConstants::PROTON;
-		break; 
 	case starlightConstants::JPSI2S_ee:
 		mdec = starlightConstants::mel;
 		ipid = starlightConstants::ELECTRON;
@@ -335,13 +331,8 @@ double Gammaavectormeson::getTheta(starlightConstants::particleTypeEnum ipid)
 	  
 	case starlightConstants::MUON:
 	case starlightConstants::ELECTRON:
-		//VM->ee/mumu
- 	        dndtheta = sin(theta)*(1.+(cos(theta)*cos(theta)));
-                break; 
-		
-	case starlightConstants::PROTON:
-		//Pick this angular distribution for J/psi --> ppbar 
-	        dndtheta = sin(theta)*(1.+(0.605*cos(theta)*cos(theta)));
+		//primarily for upsilon/j/psi.  VM->ee/mumu
+		dndtheta = sin(theta)*(1.+((cos(theta))*(cos(theta))));
 		break;
     
 	case starlightConstants::PION:
@@ -810,12 +801,13 @@ upcEvent Gammaavectormeson::produceEvent()
 	   
 			_nmbAttempts++;
 
-                        vmpid = ipid;
+                        vmpid = ipid; 
 			twoBodyDecay(ipid,comenergy,momx,momy,momz,px1,py1,pz1,px2,py2,pz2,iFbadevent);
 			double pt1chk = sqrt(px1*px1+py1*py1);
 			double pt2chk = sqrt(px2*px2+py2*py2);
 			double eta1 = pseudoRapidity(px1, py1, pz1);
 			double eta2 = pseudoRapidity(px2, py2, pz2);
+                        
 
 			if(_ptCutEnabled && !_etaCutEnabled){
 				if(pt1chk > _ptCutMin && pt1chk < _ptCutMax &&  pt2chk > _ptCutMin && pt2chk < _ptCutMax){
@@ -863,7 +855,7 @@ upcEvent Gammaavectormeson::produceEvent()
                           ipid2 = q2*ipid;
                         }
 
-			double md = getDaughterMass(vmpid);
+			double md = getDaughterMass(vmpid); 
                         double Ed1 = sqrt(md*md+px1*px1+py1*py1+pz1*pz1); 
 			starlightParticle particle1(px1, py1, pz1, Ed1, starlightConstants::UNKNOWN, ipid1, q1);
 			event.addParticle(particle1);

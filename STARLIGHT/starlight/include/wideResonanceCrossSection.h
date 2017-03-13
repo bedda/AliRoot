@@ -20,9 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // File and Version Information:
-// $Rev:: 280                         $: revision of last commit
-// $Author:: jnystrand                $: author of last commit
-// $Date:: 2016-12-12 20:38:20 +0100 #$: date of last commit
+// $Rev:: 211                         $: revision of last commit
+// $Author:: butter                   $: author of last commit
+// $Date:: 2015-08-10 04:05:09 +0200 #$: date of last commit
 //
 // Description:
 //
@@ -54,7 +54,6 @@ private:
 	double _wideWmin;
 	double _wideYmax;
 	double _wideYmin;		
-        int    _wideNumY;
 
 };
 

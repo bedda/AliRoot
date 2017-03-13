@@ -20,9 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // File and Version Information:
-// $Rev:: 281                         $: revision of last commit
+// $Rev:: 271                         $: revision of last commit
 // $Author:: jnystrand                $: author of last commit
-// $Date:: 2017-01-04 19:46:45 +0100 #$: date of last commit
+// $Date:: 2016-07-08 18:28:57 +0200 #$: date of last commit
 //
 // Description:
 //    Added incoherent factor to luminosity table output--Joey
@@ -113,12 +113,12 @@ void twoPhotonLuminosity::twoPhotonDifferentialLuminosity()
   wylumfile << starlightConstants::deuteronSlopePar <<endl;
   wylumfile << _maxPtInterference <<endl;
   wylumfile << _nmbPtBinsInterference <<endl;
-  for (unsigned int i = 0; i < _nWbins; i++) {
-    w[i] = _wMin + (_wMax-_wMin)/(_nWbins-1)*i;
+  for (unsigned int i = 0; i < _nWbins; ++i) {
+    w[i] = _wMin + (_wMax-_wMin)/_nWbins*i;
     wylumfile << w[i] <<endl;
   }
-  for (unsigned int i = 0; i < _nYbins; i++) {
-    y[i] = -_yMax + 2.*_yMax*i/(_nYbins-1);
+  for (unsigned int i = 0; i < _nYbins; ++i) {
+    y[i] = -_yMax + 2.*_yMax*i/(_nYbins);
     wylumfile << y[i] <<endl;
   }
 

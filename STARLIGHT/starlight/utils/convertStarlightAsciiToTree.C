@@ -25,7 +25,6 @@
 
 
 using namespace std;
-double IDtoMass(int particleCode);
 
 
 void ConvertStarlightAsciiToTree(const char* inFileName  = "slight.out",

@@ -20,9 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // File and Version Information:
-// $Rev:: 282                         $: revision of last commit
+// $Rev:: 262                         $: revision of last commit
 // $Author:: jnystrand                $: author of last commit
-// $Date:: 2017-03-07 18:16:20 +0100 #$: date of last commit
+// $Date:: 2016-06-01 15:14:20 +0200 #$: date of last commit
 //
 // Description:
 //
@@ -113,11 +113,8 @@ nucleus::rws(const double r) const
     norm = norm/(nuclearRadius()*nuclearRadius()*nuclearRadius());
     return norm*exp(-((3./2.)*r*r)/(nuclearRadius()*nuclearRadius()));
   }else{
-    // Fermi density distribution for heavy nuclei
-    const double x=exp(-(r - nuclearRadius()) / woodSaxonSkinDepth());
-    return x/(1.+x);
-    // Below can give problems on some machines if r is too large 
-    // return 1.0 / (1. + exp((r - nuclearRadius()) / woodSaxonSkinDepth())); 
+    // Fermi density distribution for heavy nuclei 
+    return 1.0 / (1. + exp((r - nuclearRadius()) / woodSaxonSkinDepth())); 
   }
 }
 

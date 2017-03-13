@@ -20,9 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // File and Version Information:
-// $Rev:: 283                         $: revision of last commit
+// $Rev:: 276                         $: revision of last commit
 // $Author:: jnystrand                $: author of last commit
-// $Date:: 2017-03-07 18:17:50 +0100 #$: date of last commit
+// $Date:: 2016-09-13 20:54:42 +0200 #$: date of last commit
 //
 // Description:
 //
@@ -108,7 +108,6 @@ photonNucleusCrossSection::photonNucleusCrossSection(const inputParameters& inpu
 	case JPSI:
 	case JPSI_ee:
 	case JPSI_mumu:
-	case JPSI_ppbar:
 		_slopeParameter=4.0;
 		_vmPhotonCoupling=10.45;
 		_ANORM=-2.75; 
@@ -527,8 +526,8 @@ photonNucleusCrossSection::photonFlux(const double Egamma, const int beam)
 	lEgamma=log(Egamma);
 	if (lEgamma < (lnEmin+dlnE) ||  lEgamma  > lnEmax){
 		flux_r=0.0;
-		// cout<<"  WARNING: Egamma outside defined range. Egamma= "<<Egamma
-		//    <<"   "<<lnEmax<<" "<<(lnEmin+dlnE)<<endl;
+		cout<<"  ERROR: Egamma outside defined range. Egamma= "<<Egamma
+		    <<"   "<<lnEmax<<" "<<(lnEmin+dlnE)<<endl;
 	}
 	else{
 		//       >> Egamma between Ilt and Ilt+1
@@ -602,7 +601,6 @@ photonNucleusCrossSection::sigmagp(const double Wgp)
 		case JPSI:
 		case JPSI_ee:
 		case JPSI_mumu:
-		case JPSI_ppbar:
 			sigmagp_r=(1.0-((_channelMass+protonMass)*(_channelMass+protonMass))/(Wgp*Wgp));
 			sigmagp_r*=sigmagp_r;
 			sigmagp_r*=1.E-4*0.00406*exp(0.65*log(Wgp));
@@ -828,14 +826,6 @@ photonNucleusCrossSection::breitWigner(const double W,
 		}
 		ppi=sqrt(((W/2.)*(W/2.))-muonMass*muonMass);
 		ppi0=sqrt(((_channelMass/2.)*(_channelMass/2.))-muonMass*muonMass);
-	}
-	if (_particleType==JPSI_ppbar){
-		if(W<2.*protonMass){
-			nrbw_r=0.;
-			return nrbw_r;
-		}
-		ppi=sqrt(((W/2.)*(W/2.))-protonMass*protonMass);
-		ppi0=sqrt(((_channelMass/2.)*(_channelMass/2.))-protonMass*protonMass);
 	}
 	if (_particleType==JPSI2S_ee){
 		if(W<2.*mel){
