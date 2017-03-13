@@ -20,8 +20,8 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // File and Version Information:
-// $Rev:: 276 $: revision of last commit // $Author:: jnystra#$: author of last commit
-// $Date:: 2016-09-13 20:54:42 +0200 #$: date of last commit //
+// $Rev:: 283 $: revision of last commit // $Author:: jnystra#$: author of last commit
+// $Date:: 2017-03-07 18:17:50 +0100 #$: date of last commit //
 // Description:
 //
 //
@@ -86,7 +86,8 @@ inputParameters::inputParameters()
 	  _xsecCalcMethod	 (this, "XSEC_METHOD",0, NOT_REQUIRED),
           _axionMass             (this, "AXION_MASS",50, NOT_REQUIRED),  // AXION HACK
 	  _bslopeDefinition      (this, "BSLOPE_DEFINITION",0, NOT_REQUIRED),
-	  _bslopeValue           (this, "BSLOPE_VALUE",4.0,NOT_REQUIRED)
+	  _bslopeValue           (this, "BSLOPE_VALUE",4.0,NOT_REQUIRED),
+	  _printVM               (this, "PRINT_VM",0,NOT_REQUIRED)
 {
   // All parameters must be initialised in initialisation list!
   // If not: error: 'parameter<T, validate>::parameter() [with T = unsigned int, bool validate = true]' is private
@@ -387,7 +388,17 @@ inputParameters::configureFromFile(const std::string &_configFileName)
 		defaultMaxW         = mass + 5 * width;
 		_inputBranchingRatio = starlightConstants::JpsiBrmumu;
 		break;
-	case 444:  // psi(2S)
+	case 4432212:  // J/psi
+	        cout<<"In inputParameters setting J/psi mass!"<<endl; 
+		_particleType = JPSI_ppbar;
+		_decayType    = NARROWVMDEFAULT;
+		mass          = starlightConstants::JpsiMass;
+		width         = starlightConstants::JpsiWidth;
+		defaultMinW   = mass - 5 * width;
+		defaultMaxW         = mass + 5 * width;
+		_inputBranchingRatio = starlightConstants::JpsiBrppbar; 
+		break;
+	case 444:  // psi(2S) 
 		_particleType = JPSI2S;
 		_decayType    = NARROWVMDEFAULT;
 		mass          = starlightConstants::Psi2SMass;

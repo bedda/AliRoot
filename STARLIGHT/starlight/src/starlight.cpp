@@ -20,9 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////
 //
 // File and Version Information:
-// $Rev:: 274                         $: revision of last commit
-// $Author:: butter                   $: author of last commit
-// $Date:: 2016-09-12 00:40:25 +0200 #$: date of last commit
+// $Rev:: 283                         $: revision of last commit
+// $Author:: jnystrand                $: author of last commit
+// $Date:: 2017-03-07 18:17:50 +0100 #$: date of last commit
 //
 // Description:
 //
@@ -324,11 +324,12 @@ starlight::createEventChannel()
 	case OMEGA:  
 	case PHI:
 	case JPSI:
+	case JPSI_ee:
+	case JPSI_mumu:
+	case JPSI_ppbar:
 	case JPSI2S:
 	case JPSI2S_ee:
 	case JPSI2S_mumu:
-	case JPSI_ee:
-	case JPSI_mumu:
 	case UPSILON:
 	case UPSILON_ee:
 	case UPSILON_mumu:

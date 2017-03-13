@@ -242,6 +242,9 @@ public:
 	void setbslopeDefinition      (int v)  {  _bslopeDefinition = v;          }  ///< sets the definition of b slope
         void setbslopeValue           (double v)  {  _bslopeValue = v;            }  ///< sets the value of b slope
 
+	int  printVM                  () const { return _printVM.value();         }  ///< returns the printVM value
+	void setprintVM               (int v)  {  _printVM = v;                   }  ///< sets the value of _printVM
+
 	void setProdParticleType      (starlightConstants::particleTypeEnum v)    { _particleType = v;    }  ///< sets type of produced particle
 	void setProdParticleDecayType (starlightConstants::decayTypeEnum v)       { _decayType = v;       }  ///< sets decay type of produced particle
 	void setInteractionType       (starlightConstants::interactionTypeEnum v) { _interactionType = v; }  ///< sets interaction type
@@ -315,6 +318,7 @@ private:
         parameter<double, VALIDITY_CHECK>          _axionMass;               ///Axion mass//AXION HACK
         parameter<unsigned int, VALIDITY_CHECK>    _bslopeDefinition;        ///< Optional parameter to set different values of slope parameter
         parameter<double, VALIDITY_CHECK>          _bslopeValue;             ///< Value of slope parameter when _bslopeDefinition is set to 1
+	parameter<unsigned int, VALIDITY_CHECK>    _printVM;                 ///< Optional parameter to set printing options for VM cross section
 
 	starlightConstants::particleTypeEnum       _particleType;
 	starlightConstants::decayTypeEnum          _decayType;
