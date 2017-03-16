@@ -898,7 +898,7 @@ TObjArray  * AliTreePlayer::MakeHistograms(TTree * tree, TString hisString, TStr
     Int_t hisIndex=hisDescription.Index(">>"); 
     if (hisIndex<=0) {  
       isOK=kFALSE;
-      ::Error("MakeHistograms","Invalid expression %s",hisDescription.Data());
+      ::Error("AliTreePlayer::MakeHistograms","Invalid expression %s",hisDescription.Data());
       break;
     }else{
       hisDescriptionArray->AddAtAndExpand(new TObjString(((hisDescriptionList->At(iHis)->GetName()))+(hisIndex+2)),iHis);
@@ -908,7 +908,7 @@ TObjArray  * AliTreePlayer::MakeHistograms(TTree * tree, TString hisString, TStr
     Int_t nDims=hisDimArray->GetEntries();
     if (nDims<=0){
       isOK=kFALSE;
-      ::Error("MakeHistograms","Invalid description %s",hisDescription.Data());
+      ::Error("AliTreePlayer::MakeHistograms","Invalid description %s",hisDescription.Data());
       delete hisDimArray;
       break;
     }
@@ -959,17 +959,21 @@ TObjArray  * AliTreePlayer::MakeHistograms(TTree * tree, TString hisString, TStr
     //  2.2 fill histograms if  not yet done
     if (hisArray->GetEntriesFast()==0){  // book histograms if not yet done
       for (Int_t iHis=0; iHis<nHistograms; iHis++){
+	if (hisDescriptionArray->At(iHis)==NULL){
+	  ::Error("AliTreePlayer::MakeHistograms", "Empty description %d",iHis);
+	  continue;
+	}
 	TString hisDescription= hisDescriptionArray->At(iHis)->GetName();	
 	TString  varDecription=hisDescriptionList->At(iHis)->GetName();	
 	TObjArray * descriptionArray=hisDescription.Tokenize("(,)");
 	TObjArray * varArray= TString(hisDescriptionList->At(iHis)->GetName()).Tokenize(":");
 	Int_t nLength=descriptionArray->GetEntries();
 	if ((nLength-1)/3 < hisDims[iHis]){
-	  ::Error("xxx", "Histogram dimension Mismatch %s", hisDescriptionArray->At(iHis)->GetName());
+	  ::Error("AliTreePlayer::MakeHistograms", "Histogram dimension Mismatch %s", hisDescriptionArray->At(iHis)->GetName());
 	  return NULL; 
 	}
 	if (varArray->GetEntries()<hisDims[iHis]){
-	  ::Error("xxx", "Variable mismatch %s", hisDescriptionArray->At(iHis)->GetName());
+	  ::Error("AliTreePlayer::MakeHistograms", "Variable mismatch %s", hisDescriptionArray->At(iHis)->GetName());
 	  return NULL; 
 	}
 	TString hName(descriptionArray->At(0)->GetName());
@@ -1081,11 +1085,12 @@ TPad *  AliTreePlayer::DrawHistograms(TPad  * pad, TObjArray * hisArray, TString
   //
   //
   TPRegexp isPadOption("^%O");
+  Bool_t isLogY=kFALSE;
   for (Int_t iPad=0; iPad<nPads; iPad++){
     if (drawList->At(iPad+1)==NULL) break;
     //TVirtualPad  *cPad = 
     pad->cd(iPad+1);
-    TLegend * legend = new TLegend(0.11,0.75, 0.89,0.89, TString::Format("Pad%d",iPad));
+    TLegend * legend = new TLegend(0.11,0.85, 0.89,0.99, TString::Format("Pad%d",iPad));
     legend->SetNColumns(2);
     legend->SetBorderSize(0);
     TString padSetup=drawList->At(iPad+1)->GetName();
@@ -1096,8 +1101,13 @@ TPad *  AliTreePlayer::DrawHistograms(TPad  * pad, TObjArray * hisArray, TString
       padOption=TString(&padSetup[2]);
       padOption.Remove(padOption.First(";"));
       padOption.ToLower();
-      if (padOption.Contains("logy")) pad->cd(iPad+1)->SetLogy();
-      if (padOption.Contains("logx")) pad->cd(iPad+1)->SetLogx();
+      if (padOption.Contains("logy")) {
+	pad->cd(iPad+1)->SetLogy();
+	isLogY=kTRUE;
+      }
+      if (padOption.Contains("logx")) {
+	pad->cd(iPad+1)->SetLogx();
+      }
       if (padOption.Contains("gridy")) pad->cd(iPad+1)->SetGridy();
       if (padOption.Contains("gridx")) pad->cd(iPad+1)->SetGridx();
       if (padOption.Contains("timex")) isTimeX=kTRUE;
@@ -1209,7 +1219,12 @@ TPad *  AliTreePlayer::DrawHistograms(TPad  * pad, TObjArray * hisArray, TString
     pad->cd(iPad+1);
     if (hisToDraw!=NULL){      
       hisToDraw->SetMaximum(hisMax+(hisMax-hisMin)/2.);
+      if (hisMin<=0) hisMin=TMath::Min(0.01, hisMax*0.01);
       hisToDraw->SetMinimum(hisMin);
+      if (isLogY){
+	hisToDraw->SetMaximum(hisMax*TMath::Max(10.,(hisMax/hisMin)/4.));
+      }
+
       if ((verbose&0x8)>0){
 	::Info("AliTreePlayer::DrawHistograms:","Pad %d. %s  SetMinimum(%f). SetMaximum(%f)",iPad,padDrawList->At(0)->GetName(), hisMin,hisMax+(hisMax-hisMin)/2.);
       }
@@ -1239,6 +1254,40 @@ TPad *  AliTreePlayer::DrawHistograms(TPad  * pad, TObjArray * hisArray, TString
 
 }
 
+
+
+void AliTreePlayer::MakeCacheTree(TTree * tree, TString varList, TString outFile, TString outTree, TCut selection){
+  //
+  // Fill tree with information specified in varList of TTreeFormulas
+  // In case input tree is "flat" - not array output tree can be used as a friend ....
+  // Input:
+  //    tree      - TTree with input
+  //    varList   - list of TTreeFormulas
+  //    selection - tree selection
+  // Output: tree
+  //    outFile  - output file name
+  //    outTree  - output tree name
+  TTreeSRedirector *pcstream = new TTreeSRedirector(outFile,"recreate");
+  if (tree->GetEstimate()<tree->GetEntries()) tree->SetEstimate(tree->GetEntries());
+  Int_t entries=tree->Draw(varList.Data(),selection,"goffpara");
+  TObjArray * varName=varList.Tokenize(":");
+  const Int_t nVars=varName->GetEntries();
+  Double_t vars[nVars];
+  TTree *treeOut=NULL;
+  for (Int_t iPoint=0; iPoint <entries; iPoint++){
+    for (Int_t iVar=0; iVar<nVars; iVar++){
+      vars[iVar]=tree->GetVal(iVar)[iPoint];
+      if (iPoint==0) (*pcstream)<<outTree.Data()<<TString::Format("%s=",varName->At(iVar)->GetName()).Data()<<vars[iVar];
+    }
+    if (iPoint==0) {
+       (*pcstream)<<outTree.Data()<<"\n";
+       treeOut=((*pcstream)<<outTree.Data()).GetTree();
+    }else{
+      treeOut->Fill();
+    }
+  }
+  delete pcstream;
+}
 
 
 

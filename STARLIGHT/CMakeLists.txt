@@ -20,4 +20,4 @@ add_subdirectory(AliGenFlat2Trk)
 # Installing the macros
 install(FILES test/simStarlight.C test/testsl.C DESTINATION STARLIGHT)
 
-message(STATUS "STARTLIGHT enabled")
+message(STATUS "STARLIGHT enabled")

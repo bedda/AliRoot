@@ -35,6 +35,8 @@ set(SRCS
     AliFITv3.cxx
     AliFITv4.cxx
     AliFITv5.cxx
+   AliFITv6.cxx
+
    )
 
 # Headers from sources
@@ -75,3 +77,4 @@ install(TARGETS ${MODULE}
         LIBRARY DESTINATION lib)
 
 install(FILES ${HDRS} DESTINATION include)
+install(DIRECTORY sim DESTINATION FIT)
