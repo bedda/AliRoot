@@ -70,7 +70,7 @@ public AliDecayer
     Bool_t      fPi0;             //! Flag for pi0 decay 
     static Bool_t fgInit;         //! initialization flag 
     
-    ClassDef(AliDecayerPythia, 5) // AliDecayer implementation using Pythia  
+    ClassDef(AliDecayerPythia, 6) // AliDecayer implementation using Pythia  
 };
 #endif
 
