@@ -553,9 +553,11 @@ void AliDecayerPythia::ForceDecay()
         ForceParticleDecay( -213, 22, 1); // rho-
         ForceParticleDecay(  313, 22, 1); // K0star
         break;
-    case kBeautyUpgrade:
         ForceBeautyUpgrade();
       break;
+    case kHFYellowReport:
+        ForceHFYellowReport();
+    break;
     }
 }
 
@@ -598,7 +600,25 @@ void  AliDecayerPythia::ForceBeautyUpgrade()
    // force charm hadronic decays (D mesons and Lc)
    ForceHadronicD(0,0);
 }
+void  AliDecayerPythia::ForceHFYellowReport()
+{
+ //
+ // Force dedicated decay channels of signals interesting
+ // for the ITS upgrade and specifically the yellow report
+ //
 
+   // Lb: 100% of them in Lc  in final state
+  
+   ForceParticleDecay( 5122, 4122, 1);
+  
+   // B0 -> D-e+nu
+   const Int_t prod[3]={411,11,12};
+   Int_t mult[3]={1,1,1};
+  
+   ForceParticleDecay(511,prod,mult,3,1);
+    ForceHadronicD(0,0,0);
+ 
+}
 void  AliDecayerPythia::Lu1Ent(Int_t flag, Int_t idpart, 
 		      Double_t mom, Double_t theta, Double_t phi)
 {
